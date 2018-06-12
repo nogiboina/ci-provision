@@ -1,0 +1,29 @@
+---
+- name: Turn off Jenkins Initial setup wizard .
+  lineinfile:
+    dest: /etc/default/jenkins
+    regexp: '^JAVA_ARGS='
+    line: 'JAVA_ARGS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"'
+
+- name: Set HTTP port in Jenkins config.
+  lineinfile:
+    dest: /etc/default/jenkins
+    regexp: '^HTTP_PORT='
+    line: 'HTTP_PORT={{ jenkins_http_port }}'
+- name: restarting jenkins.
+  service: name=jenkins state=restarted
+
+- name: Create custom init scripts directory.
+  file:
+    path: "{{ jenkins_home }}/init.groovy.d"
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: 0775
+- name: configure default users.
+  template: src=basic-security.groovy dest={{ jenkins_home }}/init.groovy.d/basic-security.groovy 
+- name: restart jenkins
+  service: name=jenkins state=restarted
+  become: yes
+- include: waitjenkins.yml
+    

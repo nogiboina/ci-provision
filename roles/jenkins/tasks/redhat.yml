@@ -1,0 +1,26 @@
+---
+
+- name: Install Redhat dependencies.
+  become: yes
+  yum: name={{ item }} state=installed update_cache=yes
+  with_items: "{{ dependencies_se }}" 
+
+- name: Add Jenkins repo GPG key.
+  rpm_key:
+    key: "{{ jenkins_apt_key_redhat }}"
+    state: present
+    
+- name: Ensure Jenkins repo is installed.
+  get_url:
+    url: "{{ url }}/{{redhat}}/jenkins.repo"
+    dest: /etc/yum.repos.d/jenkins.repo
+- name: Validate Jenkins is installed and register package name.
+  package:
+    name: jenkins
+    state: absent 
+- name: Ensure Jenkins is installed.
+  yum: name=jenkins state=installed
+- include: settings.yml
+- include: user.yml
+- include: plugin.yml 
+- include: waitjenkins.yml

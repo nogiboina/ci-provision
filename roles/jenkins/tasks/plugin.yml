@@ -1,0 +1,18 @@
+---
+  
+
+- name: installing plugin {{ plugins }}.
+  jenkins_plugin:
+    name: "{{ item }}"
+    params:
+      url_username: "{{ jenkins_admin_username }}"
+      url_password: "{{ jenkins_admin_password }}"
+    updates_expiration: "{{ jenkins_plugin_updates_expiration }}"
+    url: "http://{{ jenkins_hostname }}:{{ jenkins_http_port }}{{ jenkins_url_prefix }}"
+    validate_certs: false
+  with_items: "{{ plugins }}"
+- name: restart jenkins
+  service: name=jenkins state=restarted
+  become: yes
+
+  

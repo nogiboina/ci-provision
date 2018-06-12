@@ -1,0 +1,11 @@
+---
+
+- hosts: demo
+  user: devopsadmin
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  roles:
+   # - { role: common, become: true}
+    - { role: jdk }
+    - { role: tomcat }

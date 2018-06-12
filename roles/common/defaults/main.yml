@@ -1,0 +1,5 @@
+---
+app_user:             "jenkins"
+app_group:            "{{ app_user }}"
+app_user_home:        "/home/{{ app_user }}"
+create_app_user:      true

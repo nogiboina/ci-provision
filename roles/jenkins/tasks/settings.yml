@@ -1,0 +1,20 @@
+---
+- name: configure java path in init.d/jenkins.
+  template: src=jenkins dest=/etc/init.d/jenkins 
+
+- name: config jenkins port 9090 .
+  template: src=sysconfig/jenkins dest=/etc/sysconfig/jenkins 
+
+- name: Create custom init scripts directory.
+  file:
+    path: "{{ jenkins_home }}/init.groovy.d"
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: 0775
+- name: configure default users.
+  template: src=basic-security.groovy dest={{ jenkins_home }}/init.groovy.d/basic-security.groovy 
+- name: restart jenkins
+  service: name=jenkins state=restarted
+  become: yes
+  
